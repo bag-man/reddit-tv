@@ -21,6 +21,7 @@
         let url
         if (!after) {
           url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&jsonp=parseSubmissions`
+          queue = []
         } else {
           url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&after=${after}&jsonp=parseSubmissions`
         }
@@ -40,7 +41,6 @@
           })
           return accu
         }, []))
-        console.log(1111, queue)
         updatePlayer()
       }
 
