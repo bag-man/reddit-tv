@@ -8,7 +8,7 @@
       let queue = []
       let position = 0
       let player
-      let args = {}
+      let args = { subreddit: 'youtubehaiku', sort: 'new', time: 'month' }
 
       function getIdFromUrl(url){
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
@@ -74,8 +74,8 @@
 
       function onYouTubePlayerAPIReady() {
         player = new YT.Player('player', {
-          height: '720',
-          width: '1280',
+          height: '100%',
+          width: '100%',
           events: {
             'onStateChange': onPlayerStateChange
           }
@@ -103,34 +103,5 @@
       }
     </script>
   </head>
-  <body>
-    <center>
-      <div id=options>
-        <form name=options action="javascript:play()"> 
-          <input type=text name=subreddit placeholder=subreddit />
-          <select name=sort>
-            <option value="hot" selected>hot</option>
-            <option value="new">new</option>
-            <option value="top">top</option>
-            <option value="rising">rising</option>
-            <option value="controversial">controversial</option>
-          </select>
-          <select name=time>
-            <option value="hour" >hour</option>
-            <option value="day" selected>day</option>
-            <option value="week">week</option>
-            <option value="month">month</option>
-            <option value="all">all</option>
-          </select>
-          <input name=submit type=submit value=play />
-        </form>
-      </div>
-      <div id=controls style="padding-bottom: 25px">
-        <button onclick="prev()">&lt;&lt; prev </button>
-        <button onclick="next()">next &gt;&gt;</button>
-      </div>
-      <div id=player></div>
-      <div id=title style="padding-top: 25px"></div>
-    </center>
-  </body>
+  <body id=player></body>
 </html>
