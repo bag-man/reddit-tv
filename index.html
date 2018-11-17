@@ -19,9 +19,18 @@
       let player
       let args = { subreddit: 'youtubehaiku', sort: 'new', time: 'month' }
 
+      function shuffle (array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1))
+          let temp = array[i]
+          array[i] = array[j]
+          array[j] = temp
+        }
+      }
+
       function getIdFromUrl(url){
-        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
-        var match = url.match(regExp)
+        let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
+        let match = url.match(regExp)
         return (match && match[7].length === 11) ? match[7] : false
       }
 
@@ -50,6 +59,7 @@
           })
           return accu
         }, []))
+        shuffle(queue)
         updatePlayer()
       }
 
