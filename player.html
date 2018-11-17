@@ -85,6 +85,11 @@
         player = new YT.Player('player', {
           height: '720',
           width: '1280',
+          playerVars: {
+            'autoplay': 1,
+            'controls': 1, 
+            'rel': 0,
+          },
           events: {
             'onStateChange': onPlayerStateChange
           }
@@ -105,8 +110,7 @@
         e = e || window.event
         if (e.keyCode == '37') {
           prev()
-        }
-        else if (e.keyCode == '39') {
+        } else if (e.keyCode == '39') {
           next()
         }
       }

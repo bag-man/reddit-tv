@@ -18,6 +18,7 @@
       let position = 0
       let player
       let args = { subreddit: 'youtubehaiku', sort: 'new', time: 'month' }
+      let playing = false
 
       function shuffle (array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -77,6 +78,7 @@
         const id = queue[position].id
         player.loadVideoById(id)
         $('#title').html(`<a href="https://www.reddit.com/${queue[position].url}"><h1>${queue[position].title}</h1></a>`)
+        playing = true
       }
 
       function next () {
@@ -95,6 +97,11 @@
         player = new YT.Player('player', {
           height: '100%',
           width: '100%',
+          playerVars: {
+            'autoplay': 1,
+            'controls': 1, 
+            'rel': 0,
+          },
           events: {
             'onStateChange': onPlayerStateChange
           }
@@ -115,12 +122,19 @@
         e = e || window.event
         if (e.keyCode == '37') {
           prev()
-        }
-        else if (e.keyCode == '39') {
+        } else if (e.keyCode == '39') {
           next()
+        } else if (e.keyCode == '32') {
+          if (playing) {
+            playing = false
+            player.pauseVideo()
+          } else  {
+            playing = true
+            player.playVideo()
+          }
         }
       }
     </script>
   </head>
-  <body id=player></body>
+  <body style="pointer-events: none" id=player></body>
 </html>
