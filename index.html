@@ -8,6 +8,7 @@
       let queue = []
       let position = 0
       let player
+      let args = {}
 
       function getIdFromUrl(url){
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
@@ -15,30 +16,37 @@
         return (match && match[7].length === 11) ? match[7] : false
       }
 
-      function getSubmissions (args) {
-        const { subreddit, sort, time } = args
-        const url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&jsonp=parseSubmissions`
+      function getSubmissions () {
+        const { subreddit, sort, time, after } = args
+        let url
+        if (!after) {
+          url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&jsonp=parseSubmissions`
+        } else {
+          url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&after=${after}&jsonp=parseSubmissions`
+        }
         $.jsonp({ url: url});
       }
 
       function parseSubmissions (res) {
+        args.after = res.data.after
         const posts = res.data.children
-        queue = posts.reduce((accu, post) => {
+        queue = queue.concat(posts.reduce((accu, post) => {
           const re = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/
           if (post.data.url.match(re))
-            accu.push({ 
-              id: getIdFromUrl(post.data.url), 
-              title: post.data.title, 
-              url: post.data.permalink 
-            })
-            return accu
-        }, [])
+          accu.push({ 
+            id: getIdFromUrl(post.data.url), 
+            title: post.data.title, 
+            url: post.data.permalink 
+          })
+          return accu
+        }, []))
+        console.log(1111, queue)
         updatePlayer()
       }
 
       function play () {
+        delete args.after
         const input = $('form').serializeArray()
-        let args = {}
         input.forEach((input) => { 
           args[input.name] = input.value
         })
@@ -53,6 +61,7 @@
       }
 
       function next () {
+        if (position === queue.length - 2) getSubmissions()
         position++
         updatePlayer()
       }
