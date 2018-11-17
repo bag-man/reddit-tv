@@ -10,7 +10,16 @@
       let player
       let args = { subreddit: 'youtubehaiku', sort: 'new', time: 'month' }
 
-      function getIdFromUrl(url){
+      function shuffle (array) {
+        for (var i = array.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1))
+          var temp = array[i]
+          array[i] = array[j]
+          array[j] = temp
+        }
+      }
+
+      function getIdFromUrl (url) {
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
         var match = url.match(regExp)
         return (match && match[7].length === 11) ? match[7] : false
@@ -25,7 +34,7 @@
         } else {
           url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&after=${after}&jsonp=parseSubmissions`
         }
-        $.jsonp({ url: url});
+        $.jsonp({ url: url})
       }
 
       function parseSubmissions (res) {
@@ -41,6 +50,7 @@
           })
           return accu
         }, []))
+        shuffle(queue)
         updatePlayer()
       }
 
@@ -72,7 +82,7 @@
         updatePlayer()
       }
 
-      function onYouTubePlayerAPIReady() {
+      function onYouTubePlayerAPIReady () {
         player = new YT.Player('player', {
           height: '100%',
           width: '100%',
@@ -82,17 +92,16 @@
         })
       }
 
-      function onPlayerStateChange(event) {        
-        if(event.data === 0) {            
+      function onPlayerStateChange (e) {        
+        if(e.data === 0) {            
           next()
         }
       }
 
       window.onload = play
-
       document.onkeydown = checkKey
 
-      function checkKey(e) {
+      function checkKey (e) {
         e = e || window.event
         if (e.keyCode == '37') {
           prev()

@@ -10,7 +10,7 @@
       let player
       let args = {}
 
-      function getIdFromUrl(url){
+      function getIdFromUrl (url) {
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
         var match = url.match(regExp)
         return (match && match[7].length === 11) ? match[7] : false
@@ -25,7 +25,7 @@
         } else {
           url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&after=${after}&jsonp=parseSubmissions`
         }
-        $.jsonp({ url: url});
+        $.jsonp({ url: url})
       }
 
       function parseSubmissions (res) {
@@ -72,7 +72,7 @@
         updatePlayer()
       }
 
-      function onYouTubePlayerAPIReady() {
+      function onYouTubePlayerAPIReady () {
         player = new YT.Player('player', {
           height: '720',
           width: '1280',
@@ -82,14 +82,13 @@
         })
       }
 
-      function onPlayerStateChange(event) {        
-        if(event.data === 0) {            
+      function onPlayerStateChange (e) {        
+        if(e.data === 0) {            
           next()
         }
       }
 
       window.onload = play
-
       document.onkeydown = checkKey
 
       function checkKey(e) {
