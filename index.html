@@ -99,16 +99,18 @@
           width: '100%',
           playerVars: {
             'autoplay': 1,
-            'controls': 1, 
+            'controls': 0, 
             'rel': 0,
           },
           events: {
-            'onStateChange': onPlayerStateChange
+            'onStateChange': onPlayerStateChange,
+            'onError': next
           }
         })
       }
 
       function onPlayerStateChange(event) {        
+        playing = event.data === 1 ? true : false
         if(event.data === 0) {            
           next()
         }
@@ -126,10 +128,8 @@
           next()
         } else if (e.keyCode == '32') {
           if (playing) {
-            playing = false
             player.pauseVideo()
           } else  {
-            playing = true
             player.playVideo()
           }
         }
