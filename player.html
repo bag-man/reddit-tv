@@ -18,6 +18,7 @@
       let position = 0
       let player
       let args = {}
+      let playing = false
 
       function getIdFromUrl(url){
         let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
@@ -98,6 +99,7 @@
       }
 
       function onPlayerStateChange(event) {        
+        playing = event.data === 1 ? true : false
         if(event.data === 0) {            
           next()
         }
@@ -113,6 +115,12 @@
           prev()
         } else if (e.keyCode == '39') {
           next()
+        } else if (e.keyCode == '32') {
+          if (playing) {
+            player.pauseVideo()
+          } else  {
+            player.playVideo()
+          }
         }
       }
     </script>
