@@ -1,7 +1,27 @@
 <html> 
   <head>
+    <!-- # position: absolute; width: 100%; height: 100%; overflow: hidden; -->
     <title>Whut-TV</title>
     <link rel='icon' type='image/png' href='https://raw.githubusercontent.com/bag-man/nodeup/master/public/assets/imgs/favicon.ico'/>
+    <style type=text/css>
+      body {
+        margin: 0px;
+      }
+
+      #player {
+        pointer-events: none; 
+      }
+
+      #hint {
+        position: absolute; 
+        text-align: center; 
+        top: 20%; 
+        color: white; 
+        position: absolute; 
+        margin-left: auto; 
+        margin-right: auto;
+      }
+    </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53020648-4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -9,7 +29,7 @@
       gtag('js', new Date());
       gtag('config', 'UA-53020648-4');
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jQuery-JSONP/2.4.0/jquery.jsonp.min.js'></script>
     <script src="http://www.youtube.com/player_api"></script>
     <script type='text/javascript'>
@@ -104,7 +124,8 @@
           },
           events: {
             'onStateChange': onPlayerStateChange,
-            'onError': next
+            'onError': next,
+            'onReady': hintHander
           }
         })
       }
@@ -134,7 +155,20 @@
           }
         }
       }
+
+      function hintHander () {
+        $('body').mousemove(function () {
+          $('#hint').fadeIn(1000, function () {
+            $('#hint').fadeOut(1000, function () {
+              console.log('faded')
+            })
+          })
+        })
+      }
     </script>
   </head>
-  <body style="pointer-events: none" id=player></body>
+  <body>
+    <div id=hint>Press space to pause, left and right to skip</div>
+    <div id=player></div>
+  </body>
 </html>
