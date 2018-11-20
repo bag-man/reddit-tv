@@ -1,5 +1,6 @@
 <html> 
   <head>
+    <meta charset="UTF-8">
     <title>Whut-TV</title>
     <link rel='icon' type='image/png' href='https://raw.githubusercontent.com/bag-man/nodeup/master/public/assets/imgs/favicon.ico'/>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53020648-4"></script>
@@ -20,7 +21,7 @@
       let args = {}
       let playing = false
 
-      function getIdFromUrl(url){
+      function getIdFromUrl (url){
         let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
         let match = url.match(regExp)
         return (match && match[7].length === 11) ? match[7] : false
@@ -82,7 +83,7 @@
         updatePlayer()
       }
 
-      function onYouTubePlayerAPIReady() {
+      function onYouTubePlayerAPIReady () {
         player = new YT.Player('player', {
           height: '720',
           width: '1280',
@@ -98,7 +99,7 @@
         })
       }
 
-      function onPlayerStateChange(event) {        
+      function onPlayerStateChange (event) {        
         playing = event.data === 1 ? true : false
         if(event.data === 0) {            
           next()
@@ -109,13 +110,13 @@
 
       document.onkeydown = checkKey
 
-      function checkKey(e) {
+      function checkKey (e) {
         e = e || window.event
-        if (e.keyCode == '37') {
+        if (e.keyCode === 37) {
           prev()
-        } else if (e.keyCode == '39') {
+        } else if (e.keyCode === 39) {
           next()
-        } else if (e.keyCode == '32') {
+        } else if (e.keyCode === 32) {
           if (playing) {
             player.pauseVideo()
           } else  {
