@@ -3,6 +3,8 @@
     <meta charset="UTF-8">
     <title>Whut-TV</title>
     <link rel='icon' type='image/png' href='https://raw.githubusercontent.com/bag-man/nodeup/master/public/assets/imgs/favicon.ico'/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.3.1/lux/bootstrap.min.css" integrity="sha256-2AE13SXoJY6p0WSPAlYEZpalYyQ1NiipAwSt3s60n8M=" crossorigin="anonymous" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53020648-4"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -10,27 +12,28 @@
       gtag('js', new Date());
       gtag('config', 'UA-53020648-4');
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jQuery-JSONP/2.4.0/jquery.jsonp.min.js'></script>
     <script src="http://www.youtube.com/player_api"></script>
     <script type='text/javascript'>
       const limit = 100
+      const DEFAULT_SUB = 'youtubehaiku'
       let queue = []
       let position = 0
       let player
-      let args = { subreddit: 'youtubehaiku', sort: 'new', time: 'month' }
+      let args = { subreddit: DEFAULT_SUB, sort: 'top', time: 'week' }
       let playing = false
 
-      function shuffle (array) {
-        for (let i = array.length - 1; i > 0; i--) {
+      function shuffle () {
+        for (let i = queue.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1))
-          let temp = array[i]
-          array[i] = array[j]
-          array[j] = temp
+          let temp = queue[i]
+          queue[i] = queue[j]
+          queue[j] = temp
         }
       }
 
-      function getIdFromUrl (url){
+      function getIdFromUrl (url) {
         let regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/
         let match = url.match(regExp)
         return (match && match[7].length === 11) ? match[7] : false
@@ -45,7 +48,7 @@
         } else {
           url = `https://www.reddit.com/r/${subreddit}/${sort}/.json?limit=${limit}&t=${time}&after=${after}&jsonp=parseSubmissions`
         }
-        $.jsonp({ url: url});
+        $.jsonp({ url: url })
       }
 
       function parseSubmissions (res) {
@@ -61,7 +64,6 @@
           })
           return accu
         }, []))
-        shuffle(queue)
         updatePlayer()
       }
 
@@ -71,7 +73,7 @@
         input.forEach((input) => { 
           args[input.name] = input.value
         })
-        args.subreddit = args.subreddit ? args.subreddit : 'videos'
+        args.subreddit = args.subreddit ? args.subreddit : DEFAULT_SUB
         getSubmissions(args)
       }
 
@@ -88,7 +90,7 @@
       }
 
       function prev () {
-        if(!position) return
+        if (!position) return
         position--
         updatePlayer()
       }
@@ -111,7 +113,7 @@
 
       function onPlayerStateChange (event) {        
         playing = event.data === 1 ? true : false
-        if(event.data === 0) {            
+        if (event.data === 0) {            
           next()
         }
       }
@@ -134,7 +136,62 @@
           }
         }
       }
+
+      $(document).ready(() => {
+        $("#controls").fadeOut(2000)
+        $(".shuffle").click(() => {
+          shuffle()
+        })
+        $("#controlsArea").hover(() => {
+          $("#controls").fadeToggle(100)
+        },
+        () => {
+          $("#controls").fadeOut(100)
+        });
+      })
     </script>
+    <style>
+      .form-control {
+        font-size: 1rem;
+        margin-right: 3px;
+      }
+      h1 {
+        color: white;
+      }
+      a:hover {
+        text-decoration: none;
+      }
+    </style>
   </head>
-  <body style="pointer-events: none" id=player></body>
+  <body style="margin: 0px">
+    <div id=playerArea>
+      <div style="pointer-events:none; position: absolute" id=player />
+    </div>
+    <div id="controlsArea" style="position: relative; background-color: rgba(0,0,0,0); padding: 0px; height: 50px"/>
+      <center>
+        <div id="controls" style="position: relative; background-color: rgba(0,0,0,0.5); padding: 10px">
+          <form class="form-inline" name=options style="margin: 0px; display:inline" action="javascript:play()"> 
+            <input class="form-control" type=text name=subreddit placeholder=subreddit />
+            <select class="form-control" name=sort>
+              <option value="hot">hot</option>
+              <option value="new">new</option>
+              <option value="top" selected>top</option>
+              <option value="rising">rising</option>
+              <option value="controversial">controversial</option>
+            </select>
+            <select class="form-control" name=time>
+              <option value="hour">hour</option>
+              <option value="day">day</option>
+              <option value="week" selected>week</option>
+              <option value="month">month</option>
+              <option value="all">all</option>
+            </select>
+            <input class="form-control shuffle" value=shuffle type=button />
+            <input class="form-control" name=submit type=submit value=play />
+          </form>
+          <div id=title style="padding-top: 15px"></div>
+        </div>
+      </center>
+    </div>
+  </body>
 </html>
